@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Tutorial10.Models;
+namespace Tutorial10.DTOs;
 
-public class Patient
+public class DoctorDTO
 {
-    [Key]
-    public int IdPatient { get; set; }
+    
+    public int IdDoctor { get; set; }
     
     [MaxLength(100)]
     [Required]
@@ -15,7 +15,7 @@ public class Patient
     [Required]
     public string LastName { get; set; } = null!;
     
-    public DateTime Birthdate { get; set; }
-    
-    public ICollection<Prescription> Prescriptions { get; set; } = null!;
+    [MaxLength(100)]
+    [Required]
+    public string Email { get; set; } = null!;
 }
