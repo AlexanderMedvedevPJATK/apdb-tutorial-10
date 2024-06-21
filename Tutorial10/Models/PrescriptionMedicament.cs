@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Tutorial10.Models;
 
+[PrimaryKey(nameof(IdMedicament), nameof(IdPrescription))]
 public class PrescriptionMedicament
 {
     
@@ -17,6 +18,9 @@ public class PrescriptionMedicament
     [Required]
     public string Details { get; set; } = null!;
     
+    [ForeignKey(nameof(IdMedicament))]
     public Medicament Medicament { get; set; } = null!;
+    
+    [ForeignKey(nameof(IdPrescription))]
     public Prescription Prescription { get; set; } = null!;
 }
