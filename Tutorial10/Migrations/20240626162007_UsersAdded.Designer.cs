@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tutorial10.Context;
 
@@ -11,9 +12,11 @@ using Tutorial10.Context;
 namespace Tutorial10.Migrations
 {
     [DbContext(typeof(Apbd10Context))]
-    partial class Apbd10ContextModelSnapshot : ModelSnapshot
+    [Migration("20240626162007_UsersAdded")]
+    partial class UsersAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
