@@ -64,11 +64,16 @@ namespace Tutorial10.Controllers
                 return Unauthorized();
             }
 
+            Claim[] userClaims = {
+                new Claim(ClaimTypes.Name, user.Username),
+            };
+            
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecretKey"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
+                claims: userClaims,
                 expires: DateTime.Now.AddMinutes(10),
                 signingCredentials: credentials
             );
@@ -86,7 +91,10 @@ namespace Tutorial10.Controllers
         [HttpPost("refresh")]
         public IActionResult Refresh(RefreshTokenRequest refreshToken)
         {
-            var user = _context.Users.FirstOrDefault(u => u.RefreshToken == refreshToken.RefreshToken);
+            var username = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var user = _context.Users.FirstOrDefault(u =>
+                u.Username == username && u.RefreshToken == refreshToken.RefreshToken);
+            
             if (user == null)
             {
                 throw new SecurityTokenException("Invalid refresh token");
@@ -98,12 +106,12 @@ namespace Tutorial10.Controllers
             }
             
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecretKey"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var jwtToken = new JwtSecurityToken(
                 issuer: "https://localhost:5001",
                 audience: "https://localhost:5001",
                 expires: DateTime.Now.AddMinutes(10),
-                signingCredentials: creds
+                signingCredentials: credentials
             );
             
             user.RefreshToken = SecurityHelpers.GenerateRefreshToken();
