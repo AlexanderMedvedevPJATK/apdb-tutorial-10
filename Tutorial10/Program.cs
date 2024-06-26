@@ -26,8 +26,8 @@ builder.Services.AddAuthentication(options =>
 {
     opt.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,   //by who
-        ValidateAudience = true, //for whom
+        ValidateIssuer = true,   // by who
+        ValidateAudience = true, // for whom
         ValidateLifetime = true,
         ClockSkew = TimeSpan.FromMinutes(2),
         ValidIssuer = "https://localhost:5001", //should come from configuration
