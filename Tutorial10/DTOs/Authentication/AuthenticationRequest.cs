@@ -1,13 +1,11 @@
 using Microsoft.Build.Framework;
 
-namespace Tutorial10.DTOs.Authentication
+namespace Tutorial10.DTOs.Authentication;
+public class AuthenticationRequest
 {
-    public class AuthenticationRequest
-    {
-        [Required]
-        public string Username { get; set; } = null!;
-        
-        [Required]
-        public string Password { get; set; } = null!;
-    }
+    [Required]
+    public string Username { get; set; } = null!;
+    
+    [Required]
+    public string Password { get; set; } = null!;
 }

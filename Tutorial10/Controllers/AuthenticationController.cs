@@ -81,5 +81,39 @@ namespace Tutorial10.Controllers
                 refreshToken = user.RefreshToken
             });
         }
+        
+        [Authorize(AuthenticationSchemes = "IgnoreTokenExpirationScheme")]
+        [HttpPost("refresh")]
+        public IActionResult Refresh(RefreshTokenRequest refreshToken)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.RefreshToken == refreshToken.RefreshToken);
+            if (user == null)
+            {
+                throw new SecurityTokenException("Invalid refresh token");
+            }
+
+            if (user.RefreshTokenExp < DateTime.Now)
+            {
+                throw new SecurityTokenException("Refresh token expired");
+            }
+            
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecretKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var jwtToken = new JwtSecurityToken(
+                issuer: "https://localhost:5001",
+                audience: "https://localhost:5001",
+                expires: DateTime.Now.AddMinutes(10),
+                signingCredentials: creds
+            );
+            
+            user.RefreshToken = SecurityHelpers.GenerateRefreshToken();
+            user.RefreshTokenExp = DateTime.Now.AddDays(1);
+            _context.SaveChanges();
+            return Ok(new
+            {
+                accessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken),
+                refreshToken = user.RefreshToken
+            });
+        }
     }
 }
